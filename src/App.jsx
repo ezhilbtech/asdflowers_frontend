@@ -77,7 +77,7 @@ items:rows
 }
 
 const res=await axios.post(
-"http://localhost:8080/api/bills",
+"https://asdflowers.onrender.com",
 payload
 )
 
