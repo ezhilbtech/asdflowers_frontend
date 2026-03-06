@@ -77,7 +77,7 @@ items:rows
 }
 
 const res=await axios.post(
-"https://asdflowers.onrender.com/api",
+"https://asdflowers.onrender.com/api/bills",
 payload
 )
 
