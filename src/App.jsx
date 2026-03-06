@@ -77,7 +77,7 @@ items:rows
 }
 
 const res=await axios.post(
-"https://asdflowers.onrender.com",
+"https://asdflowers.onrender.com/api",
 payload
 )
 
@@ -95,7 +95,7 @@ return
 }
 
 window.open(
-`http://localhost:8080/api/bills/pdf/${billId}`
+`https://asdflowers.onrender.com/api/bills/pdf/${billId}`
 )
 
 }
