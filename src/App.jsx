@@ -7,7 +7,7 @@ const flowers = [
   "காகட்டான் - Kakattan",
   "சாமந்தி - Samanthi",
   "கோழிகொண்டை - Kozhikondai",
-  "கேந்தி - kaenthi",
+  "கேந்தி - Kaenthi",
   "முல்லை - Mullai",
   "கனகாம்பரம் - Kanakambaram",
   "ஜாதி - Jathi",
@@ -22,20 +22,23 @@ const [rows,setRows]=useState([]);
 
 const [form,setForm]=useState({
 userName:"",
-villageName:"",
-advance:0
+villageName:""
 })
 
 const [billId,setBillId]=useState(null)
+
+/* ADD ROW */
 
 const addRow=()=>{
 
 setRows([
 ...rows,
-{date:"",quantity:0,rate:0,total:0}
+{date:"",quantity:0,rate:0,borrow:0,total:0}
 ])
 
 }
+
+/* DELETE ROW */
 
 const deleteRow=(index)=>{
 
@@ -47,28 +50,42 @@ setRows(updated)
 
 }
 
+/* UPDATE ROW */
+
 const updateRow=(i,key,val)=>{
 
 const updated=[...rows]
 
 updated[i][key]=val
 
-updated[i].total=
-updated[i].quantity*
-updated[i].rate
+const qty=updated[i].quantity || 0
+const rate=updated[i].rate || 0
+
+updated[i].total = qty * rate
 
 setRows(updated)
 
 }
 
-const total=rows.reduce((s,r)=>s+r.total,0)
+/* TOTAL */
 
-const commission=total*0.10
+const total = rows.reduce((sum,row)=>sum + row.total ,0)
 
-const finalAmount=
-total-commission-form.advance
+/* BORROW TOTAL */
 
-const saveBill=async()=>{
+const borrowTotal = rows.reduce((sum,row)=>sum + (row.borrow || 0) ,0)
+
+/* COMMISSION */
+
+const commission = total * 0.10
+
+/* FINAL AMOUNT */
+
+const finalAmount = total - commission - borrowTotal
+
+/* SAVE BILL */
+
+const saveBill = async()=>{
 
 const payload={
 ...form,
@@ -76,7 +93,7 @@ flowerName:flower,
 items:rows
 }
 
-const res=await axios.post(
+const res = await axios.post(
 "https://asdflowers.onrender.com/api/bills",
 payload
 )
@@ -86,6 +103,8 @@ setBillId(res.data.id)
 alert("Bill Saved")
 
 }
+
+/* DOWNLOAD PDF */
 
 const downloadPDF=()=>{
 
@@ -97,6 +116,21 @@ return
 window.open(
 `https://asdflowers.onrender.com/api/bills/pdf/${billId}`
 )
+
+}
+
+/* DELETE ALL DATA */
+
+const deleteAll = async()=>{
+
+await axios.delete(
+"https://asdflowers.onrender.com/api/bills/deleteAll"
+)
+
+alert("All Data Deleted")
+
+setRows([])
+setBillId(null)
 
 }
 
@@ -130,9 +164,7 @@ villageName:e.target.value
 
 <label>Flower</label>
 
-<select
-onChange={e=>setFlower(e.target.value)}
->
+<select onChange={e=>setFlower(e.target.value)}>
 
 <option>Select Flower</option>
 
@@ -157,6 +189,7 @@ Add Row
 <th>Date</th>
 <th>Weight</th>
 <th>Rate</th>
+<th>Borrow</th>
 <th>Total</th>
 <th></th>
 </tr>
@@ -189,6 +222,14 @@ onChange={e=>updateRow(i,"rate",Number(e.target.value))}
  />
 </td>
 
+<td>
+<input
+type="number"
+placeholder="Borrow"
+onChange={e=>updateRow(i,"borrow",Number(e.target.value))}
+ />
+</td>
+
 <td>{r.total}</td>
 
 <td>
@@ -216,14 +257,7 @@ Delete
 
 <h4>Commission 10% ₹ {commission}</h4>
 
-<input
-type="number"
-placeholder="Advance"
-onChange={e=>setForm({
-...form,
-advance:Number(e.target.value)
-})}
-/>
+<h4>Borrow ₹ {borrowTotal}</h4>
 
 <h2>Final Amount ₹ {finalAmount}</h2>
 
@@ -237,6 +271,10 @@ Save Bill
 
 <button onClick={downloadPDF}>
 Download PDF
+</button>
+
+<button onClick={deleteAll}>
+Delete All Data
 </button>
 
 </div>
