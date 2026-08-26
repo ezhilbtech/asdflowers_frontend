@@ -11,7 +11,10 @@ const flowers = [
   "முல்லை - Mullai",
   "கனகாம்பரம் - Kanakambaram",
   "ஜாதி - Jathi",
-  "பன்னீர் ரோஜா - Panner Rose"
+  "பன்னீர் ரோஜா - Panner Rose",
+  "சாம்பிங் - samping",
+  "மூக்குத்தி ரோஜா - mukkuthi Rose",
+  "அலரி - alari"
 ];
 
 export default function App(){
